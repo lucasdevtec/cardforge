@@ -2,8 +2,8 @@ export type CardData = Record<string, string>;
 
 export interface DesignElement {
   id: string;
-  type: "variable" | "static";
-  content: string;
+  type: "variable" | "static" | "image"; // Adicionado "image"
+  content: string; // Guardará o texto ou o Object URL da imagem
   x: number;
   y: number;
   fontSize: number;
@@ -17,4 +17,7 @@ export interface DesignElement {
   shadowBlur: number;
   depth: number;
   rotation: number;
+  width: number;
+  height: number; // Adicionado para controlar o redimensionamento de imagens
+  textAlign: "left" | "center" | "right" | "justify";
 }

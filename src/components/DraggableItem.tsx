@@ -21,13 +21,14 @@ export default function DraggableItem({
   onClick,
 }: DraggableItemProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
+  const isImage = el.type === "image";
 
   const displayText =
     el.type === "variable"
       ? currentCard[el.content] || `{${el.content}}`
       : el.content;
 
-  const textShadow = generateTextShadow(el);
+  const textShadow = isImage ? "none" : generateTextShadow(el);
 
   return (
     <Draggable
@@ -46,19 +47,37 @@ export default function DraggableItem({
             : "hover:outline hover:outline-1 hover:outline-gray-400"
         }`}
         style={{
-          fontSize: `${el.fontSize}px`,
-          color: el.color,
-          fontFamily: el.fontFamily,
-          fontWeight: el.fontWeight,
-          fontStyle: el.fontStyle,
-          textShadow,
           transform: `rotate(${el.rotation}deg)`,
-          whiteSpace: "nowrap",
-          padding: "2px 4px",
+          width: `${el.width}px`,
+          height: isImage ? `${el.height}px` : "auto", // Imagem respeita a altura definida
           zIndex: isSelected ? 10 : 1,
+          padding: isImage ? "0" : "2px 4px",
         }}
       >
-        {displayText}
+        {isImage ? (
+          <img
+            src={el.content}
+            alt="Ícone Fixo"
+            className="w-full h-full object-contain pointer-events-none"
+            /* pointer-events-none impede que o clique na imagem quebre o arrasto do Draggable */
+          />
+        ) : (
+          <div
+            style={{
+              fontSize: `${el.fontSize}px`,
+              color: el.color,
+              fontFamily: el.fontFamily,
+              fontWeight: el.fontWeight,
+              fontStyle: el.fontStyle,
+              textShadow,
+              textAlign: el.textAlign,
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {displayText}
+          </div>
+        )}
       </div>
     </Draggable>
   );
