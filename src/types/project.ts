@@ -6,6 +6,8 @@ export interface ProjectSave {
   cardHeight: number;
   elements: DesignElement[];
   bgImage: string | null; // Guardará a imagem em base64
+  bgColor?: string; // Cor de fundo do cartão (opcional)
+  borderRadius?: number; // Raio da borda do cartão (opcional)
   csvData: CardData[];
   headers: string[];
 }

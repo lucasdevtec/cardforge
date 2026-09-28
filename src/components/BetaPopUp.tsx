@@ -7,10 +7,13 @@ export default function BetaPopup() {
 
   useEffect(() => {
     // Verifica se o utilizador já fechou o popup antes
-    const hasSeenPopup = localStorage.getItem("cardforge_beta_popup");
-    if (!hasSeenPopup) {
-      setIsVisible(true);
-    }
+    const timer = setTimeout(() => {
+      const hasSeenPopup = localStorage.getItem("cardforge_beta_popup");
+      if (!hasSeenPopup) {
+        setIsVisible(true);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {

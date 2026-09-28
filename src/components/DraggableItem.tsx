@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Draggable from "react-draggable";
 import { DesignElement, CardData } from "../types/design";
-import { generateTextShadow } from "../utils/textEffects";
+import { generateTextShadow, generateTextStroke } from "../utils/textEffects";
 
 interface DraggableItemProps {
   el: DesignElement;
@@ -25,10 +25,13 @@ export default function DraggableItem({
 
   const displayText =
     el.type === "variable"
-      ? currentCard[el.content] || `{${el.content}}`
+      ? currentCard[el.content] !== undefined
+        ? currentCard[el.content]
+        : `{${el.content}}`
       : el.content;
 
   const textShadow = isImage ? "none" : generateTextShadow(el);
+  const textStroke = isImage ? undefined : generateTextStroke(el);
 
   return (
     <Draggable
@@ -41,43 +44,65 @@ export default function DraggableItem({
     >
       <div
         ref={nodeRef}
-        className={`absolute cursor-move rounded ${
+        className={`absolute cursor-move select-none rounded transition-shadow ${
           isSelected
-            ? "outline outline-2 outline-blue-500 border-dashed border-2 border-white"
+            ? "outline outline-2 outline-blue-500 ring-2 ring-white/70 shadow-lg"
             : "hover:outline hover:outline-1 hover:outline-gray-400"
         }`}
         style={{
-          transform: `rotate(${el.rotation}deg)`,
           width: `${el.width}px`,
-          height: isImage ? `${el.height}px` : "auto", // Imagem respeita a altura definida
-          zIndex: isSelected ? 10 : 1,
+          height: isImage ? `${el.height}px` : "auto",
+          zIndex: isSelected ? 20 : 1,
           padding: isImage ? "0" : "2px 4px",
+          opacity: el.opacity !== undefined ? el.opacity : 1,
         }}
       >
-        {isImage ? (
-          <img
-            src={el.content}
-            alt="Ícone Fixo"
-            className="w-full h-full object-contain pointer-events-none"
-            /* pointer-events-none impede que o clique na imagem quebre o arrasto do Draggable */
-          />
-        ) : (
-          <div
-            style={{
-              fontSize: `${el.fontSize}px`,
-              color: el.color,
-              fontFamily: el.fontFamily,
-              fontWeight: el.fontWeight,
-              fontStyle: el.fontStyle,
-              textShadow,
-              textAlign: el.textAlign,
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-          >
-            {displayText}
-          </div>
-        )}
+        <div
+          style={{
+            transform: `rotate(${el.rotation}deg)`,
+            transformOrigin: "center center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {isImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={el.content}
+              alt="Elemento Visual"
+              className="w-full h-full object-contain pointer-events-none"
+              style={{
+                borderRadius: el.borderRadius
+                  ? `${el.borderRadius}px`
+                  : undefined,
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                fontSize: `${el.fontSize}px`,
+                color: el.color,
+                fontFamily: el.fontFamily,
+                fontWeight: el.fontWeight,
+                fontStyle: el.fontStyle,
+                textShadow,
+                WebkitTextStroke: textStroke,
+                textAlign: el.textAlign,
+                letterSpacing: el.letterSpacing
+                  ? `${el.letterSpacing}px`
+                  : undefined,
+                lineHeight: el.lineHeight ? el.lineHeight : "normal",
+                borderRadius: el.borderRadius
+                  ? `${el.borderRadius}px`
+                  : undefined,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {displayText}
+            </div>
+          )}
+        </div>
       </div>
     </Draggable>
   );

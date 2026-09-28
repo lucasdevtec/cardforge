@@ -20,4 +20,10 @@ export interface DesignElement {
   width: number;
   height: number; // Adicionado para controlar o redimensionamento de imagens
   textAlign: "left" | "center" | "right" | "justify";
+  opacity?: number; // 0 a 1
+  strokeWidth?: number; // 0 a 10px
+  strokeColor?: string; // cor do contorno
+  letterSpacing?: number; // espaçamento de caracteres
+  lineHeight?: number; // altura de linha
+  borderRadius?: number; // arredondamento de bordas
 }
